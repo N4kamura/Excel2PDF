@@ -1,0 +1,9 @@
+.venv
+images/
+tools/
+dist/
+build/
+__pycache__/
+export_json.__pycache__
+content/
+main.spec
