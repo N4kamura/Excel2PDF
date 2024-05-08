@@ -35,6 +35,11 @@ def excel_to_pdf(output_path: str | Path, tipicidad: str, type_data: str, excel_
         code = re.search(pattern2, excel_name)[0]
 
     excel = win32com.client.Dispatch("Excel.Application")
+    #Visibility:
+    excel.ScreenUpdating = False
+    excel.DisplayAlerts = False
+    excel.EnableEvents = False
+
     try:
         wb = excel.Workbooks.OpenXML(excel_path) #Open -> OpenXML
     except Exception as e:
@@ -48,7 +53,7 @@ def excel_to_pdf(output_path: str | Path, tipicidad: str, type_data: str, excel_
             print("Error: ", e)
 
         #sheet.Select()
-        print(f"Procesando: {sheet.Name}")
+        sheet.Activate()
         print_area = print_areas[i]
 
         if print_area:
@@ -61,7 +66,8 @@ def excel_to_pdf(output_path: str | Path, tipicidad: str, type_data: str, excel_
         elif page_sizes[i] == "A3":
             _set_page_size(sheet, win32com.client.constants.xlPaperA3, orientations[i])
         
-        final_name = f"{code}_"+sheet.Name+tipicidad+".pdf"
+        print("Contenido: ", sheet_name, print_area, tipicidad)
+        final_name = f"{code}_"+sheet_name+tipicidad+".pdf"
         output_filaname = output_path / type_data / final_name
 
         if not os.path.exists(output_path / type_data):
@@ -69,6 +75,9 @@ def excel_to_pdf(output_path: str | Path, tipicidad: str, type_data: str, excel_
         wb.ActiveSheet.ExportAsFixedFormat(0, str(output_filaname))
 
     wb.Close(False)
+    excel.ScreenUpdating = True
+    excel.DisplayAlerts = True
+    excel.EnableEvents = True
     excel.Quit()
     return None
 

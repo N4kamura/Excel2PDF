@@ -27,7 +27,12 @@ class MyWindow(QMainWindow):
             self.UI.pathText.setText(self.path_file)
 
     def start_program(self):
-        anexos_file = Path(self.path_file) / "Anexos"
+        start_time = time.time()
+        try:
+            anexos_file = Path(self.path_file) / "Anexos"
+        except AttributeError as e:
+            error_message = QErrorMessage(self)
+            return error_message.showMessage("Use Open File button first!")
         if not os.path.exists(anexos_file):
             os.makedirs(anexos_file)
 
@@ -39,8 +44,8 @@ class MyWindow(QMainWindow):
         if not os.path.exists(field_path):
             return print(f"Falta la carpeta de campo: {field_path}")
         
-        print("###### STARTING VEHICLES #####")
         if self.UI.vehiclesCheck.isChecked():
+            print("###### STARTING VEHICLES #####")
             vehicle_path = field_path / "Vehicular"
             apply_with_tipicidad(
                 anexos_path=    anexos_file,
@@ -50,8 +55,8 @@ class MyWindow(QMainWindow):
                 extension=      ".xlsm",
             )
 
-        print("\n###### STARTING PEDESTRIAN #####")
         if self.UI.pedestrianCheck.isChecked():
+            print("\n###### STARTING PEDESTRIAN #####")
             pedestrian_path = field_path / "Peatonal"
             apply_with_tipicidad(
                 anexos_path=    anexos_file,
@@ -61,8 +66,8 @@ class MyWindow(QMainWindow):
                 extension=      ".xlsm",
             )
 
-        print("\n###### STARTING QUEUES #####")
         if self.UI.queuesCheck.isChecked():
+            print("\n###### STARTING QUEUES #####")
             queues_path = field_path / "Longitud de Cola"
             apply_with_tipicidad(
                 anexos_path=    anexos_file,
@@ -72,8 +77,8 @@ class MyWindow(QMainWindow):
                 extension=      ".xlsx",
             )
 
-        print("\n###### STARTING BOARDING #####")
         if self.UI.boardingCheck.isChecked():
+            print("\n###### STARTING BOARDING #####")
             boarding_path = field_path / "Embarque y Desembarque"
             apply_with_tipicidad(
                 anexos_path=    anexos_file,
@@ -83,8 +88,8 @@ class MyWindow(QMainWindow):
                 extension=      ".xlsx",
             )
 
-        print("\n###### STARTING CYCLE AND PHASES #####")
         if self.UI.cycleCheck.isChecked():
+            print("\n###### STARTING CYCLE AND PHASES #####")
             cycle_path = field_path / "Tiempo de Ciclo Semaforico"
             apply_without_tipicidad(
                 anexos_path=    anexos_file,
@@ -94,6 +99,8 @@ class MyWindow(QMainWindow):
                 extension=      ".xlsx",
             )
 
+        end_time = time.time()
+        print("Total time: ", int(end_time - start_time), "seconds")
         self.UI.label.setText(f"STATE: Attachment files created successfully")
 
 def main():
